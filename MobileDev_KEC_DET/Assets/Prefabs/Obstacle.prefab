@@ -119,3 +119,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waitTime: 2
+  explosion: {fileID: 2497374191351350968, guid: ef5dcaaa692449b4eb76afcaf5587f11, type: 3}

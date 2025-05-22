@@ -520,6 +520,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dodgeSpeed: 5
   rollSpeed: 5
+  horizMovement: 0
+  swipeMove: 2
+  minSwipeDistance: 0.25
+  minScale: 0.5
+  maxScale: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
