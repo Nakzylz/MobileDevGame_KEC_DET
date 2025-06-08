@@ -52,6 +52,7 @@ public class PlayerBehaviour : MonoBehaviour
     /// </summary>
     private float currentScale = 1;
 
+    private MobileJoystick joystick;
     // Start is called before the first frame update
     public void Start()
     {
@@ -59,6 +60,8 @@ public class PlayerBehaviour : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         minSwipeDistancePixels = minSwipeDistance *
         Screen.dpi;
+        joystick = GameObject.FindObjectOfType
+            <MobileJoystick>();
     }
     /// <summary>
     /// FixedUpdate is a prime place to put physics
@@ -76,13 +79,25 @@ public class PlayerBehaviour : MonoBehaviour
         // Check if we're moving to the side
         var horizontalSpeed = Input.GetAxis("Horizontal") * dodgeSpeed;
 
+        /* If the joystick is active and the player is
+        moving the joystick, override the value */
+        if (joystick && joystick.axisValue.x != 0)
+        {
+            horizontalSpeed = joystick.axisValue.x *
+            dodgeSpeed;
+        }
+
         // Check if we are running either in the Unity editor or in a standalone build.
 #if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_EDITOR
     // If the mouse is held down (or the screen is tapped on Mobile)
     if (Input.GetMouseButton(0))
     {
-        var screenPos = Input.mousePosition;
-        horizontalSpeed = CalculateMovement(screenPos);
+        if(!joystick)
+            {
+                var screenPos = Input.mousePosition;
+                horizontalSpeed =
+                    CalculateMovement(screenPos);
+            }
     }
 
     /* Check if we are running on a mobile device */
@@ -98,14 +113,16 @@ public class PlayerBehaviour : MonoBehaviour
             case MobileHorizMovement.ScreenTouch:
                 /* Check if Input registered more than
                    zero touches */
-                if (Input.touchCount > 0)
-                {
-                    /* Store the first touch detected */
-                    var firstTouch = Input.touches[0];
-                    var screenPos = firstTouch.position;
-                    horizontalSpeed =
-                        CalculateMovement(screenPos);
-                }
+                if (!joystick && Input.touchCount > 0)
+                {
+                    /* Store the first touch detected
+                    */
+                    var firstTouch = Input.touches[0];
+                    var screenPos =
+                        firstTouch.position;
+                    horizontalSpeed =
+                        CalculateMovement(screenPos);
+                }
                 break;
         }
 

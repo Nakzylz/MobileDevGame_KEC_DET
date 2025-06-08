@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement; // SceneManager
 public class PauseScreenBehaviour : MainMenuBehaviour
 {
+    [Tooltip("Reference to the on screen controls menu")]
+    public GameObject onScreenControls;
+
     /// <summary>
     /// If our game is currently paused
     /// </summary>
@@ -29,11 +32,12 @@ public class PauseScreenBehaviour : MainMenuBehaviour
            otherwise 1 */
         Time.timeScale = (paused) ? 0 : 1;
         pauseMenu.SetActive(paused);
+        onScreenControls.SetActive(!paused);
     }
     void Start()
     {
         /* Must be reset in Start or else game will be
            paused upon restart */
-        paused = false;
+        SetPauseMenu(false);
     }
 }
