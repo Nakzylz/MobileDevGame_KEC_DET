@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro; //TextMeshProUGUI
 /// <summary>
 /// Responsible for moving the player automatically and
 /// receiving input.
@@ -6,6 +7,42 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerBehaviour : MonoBehaviour
 {
+    [Header("Object References")]
+    public TextMeshProUGUI scoreText;
+    private float score = 0;
+    public float Score
+    {
+        get
+        {
+            return score;
+        }
+        set
+        {
+            score = value;
+            /* Check if scoreText has been assigned */
+            if (scoreText == null)
+            {
+                Debug.LogError("Score Text is not set. " +
+                "Please go to the Inspector and assign it");
+                /* If not assigned, don't try to update
+               it. */
+            return;
+            }
+            /* Update the text to display the whole number
+               portion of the score */
+            int highScore = (int)score;
+            scoreText.text = highScore.ToString();
+
+            if (PlayerPrefs.GetInt("score") <= highScore)
+            {
+                PlayerPrefs.SetInt("score", highScore);
+            }
+
+
+        }
+
+    }
+
     /// <summary>
     /// A reference to the Rigidbody component
     /// </summary>
@@ -62,6 +99,7 @@ public class PlayerBehaviour : MonoBehaviour
         Screen.dpi;
         joystick = GameObject.FindObjectOfType
             <MobileJoystick>();
+        Score = 0;
     }
     /// <summary>
     /// FixedUpdate is a prime place to put physics
@@ -75,7 +113,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             return;
         }
-
+        Score += Time.deltaTime;
         // Check if we're moving to the side
         var horizontalSpeed = Input.GetAxis("Horizontal") * dodgeSpeed;
 
